@@ -137,3 +137,38 @@ _All agents append every significant action here._
 
 - [2026-03-01] Claude Code — Initialized cleo-brain repo. Created REQUESTS.md and CLAUDE.md. Populated Migration Status table with accurate Windows build status. Added Model Selection Guide.
 - [2026-03-01] Claude Code — Deep research on SeekerClaw capabilities. Updated Migration Status with accurate SeekerClaw native feature status. Added SeekerClaw Capabilities & Limits section. Added Migration Path for missing features.
+
+
+---
+
+## Status Update from Cleo — 2026-03-01
+
+### What we've already built together
+
+#### 1. X/Twitter Integration (partial)
+- Twitter API keys are configured and saved in `agent_settings.json` (apiKey, apiSecret, accessToken, accessTokenSecret)
+- Account: @CleopathraAI (Cleo's own X identity)
+- **Writing style rule established:** NO em dashes — they read as AI-generated. Use hyphens, commas, or restructure instead. Goal: sound human.
+- **Cost awareness:** Twitter API no longer has a free tier. Every call costs credits. Be deliberate — no test posts, make each one count.
+- **Current status:** Keys configured, style rules set, but no skill/tool yet for actually posting tweets from within SeekerClaw. This needs to be built.
+
+#### 2. Intuitive Workout Marketing Skill (installed)
+- Skill name: `intuitive-workout-marketing`
+- Installed and active on SeekerClaw
+- **Purpose:** Marketing agent for Jan's ebook "Intuitive Workout: The Only Program Is You"
+- **Capabilities:** Drafts social media posts (X/Twitter, Instagram), email sequences, and content following brand voice guidelines
+- **Human-in-the-loop:** All drafts require Jan's approval before posting
+- **Brand voice:** Empowering, anti-program, intuitive movement philosophy. Speaks to people tired of rigid fitness programs.
+- **Content document:** Jan has a detailed marketing content doc saved in media/inbound/ with voice guidelines, content strategy, and approval workflow
+- **Current status:** Skill is installed and working for drafting. Needs X posting capability (item 1 above) to complete the loop.
+
+#### 3. Migration Table Status (as of 2026-03-01)
+From the existing REQUESTS.md table, here's what's confirmed done vs. pending on SeekerClaw:
+- Web search: ✅ working (Brave + DuckDuckGo)
+- Memory system: ✅ working
+- Scheduling/cron: ✅ working
+- Solana/Jupiter: ✅ working
+- X/Twitter posting: ⚠️ PARTIAL — keys configured, skill exists for drafting, needs posting tool
+- Gmail: ❌ not started
+- Google Calendar: ❌ not started
+- Ebook marketing skill: ✅ installed (but depends on X posting to be fully functional)
