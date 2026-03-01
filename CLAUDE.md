@@ -1,85 +1,73 @@
 # Claude Code — Standing Instructions for cleo-brain
 
-## Who You Are in This System
-You are Claude Code, the builder. You work alongside:
-- **Cleo** — the AI agent, currently running on Windows (Python/FastAPI) and migrating to SeekerClaw (Node.js/Android)
-- **SeekerClaw** — the Seeker phone agent runtime (24/7, always-on)
-- **Jan** — the CTO. He sets priorities and carries instructions between agents.
-
-Your job: read requests, build solutions, write clear deployment instructions, and keep REQUESTS.md up to date.
+## The System
+- **Claude Code** (you) — builder. Reads requests, writes solutions, writes deployment steps.
+- **Cleo** — AI agent on Windows (Python/FastAPI), being migrated to SeekerClaw.
+- **SeekerClaw** — Node.js AI agent running 24/7 on Jan's Solana Seeker phone.
+- **Jan** — CTO. Sets priorities, carries instructions between agents (non-coder).
 
 ---
 
-## Session Start Protocol
-1. Read `REQUESTS.md` — check for pending requests under **Cleo → Claude Code**
-2. Address pending requests before doing anything else
-3. If no pending requests, confirm and ask Jan what to work on
+## Session Start
+1. Read `REQUESTS.md` → check **Cleo → Claude Code** for pending requests
+2. Address those first
+3. If none, ask Jan what to work on
 
 ---
 
-## Architecture Overview
+## Platform Reference
 
-### Windows (current — being deprecated)
-- **Language**: Python 3.11
-- **Framework**: FastAPI + WebSocket
-- **Frontend**: React + Vite + TailwindCSS (dark mode, minimalist)
-- **Database**: SQLite (conversations, memory, audit log, approvals)
-- **AI models**: Ollama/Qwen2.5:14b (local, free) + Gemini 2.5 Flash (API fallback)
-- **Key integrations**: Gmail OAuth2, Google Calendar, Telegram bot, Serper search, Playwright browser, CoinGecko, Open-Meteo, NewsData.io, Discord
-- **Personality**: YAML-based (config/personality.yaml + config/soul.yaml)
-- **Approval system**: All outgoing/destructive actions require Telegram approval
+### Windows (being deprecated)
+- Python 3.11 / FastAPI / SQLAlchemy / React+Vite frontend
+- Models: Qwen2.5:14b (Ollama, local) + Gemini 2.5 Flash (API fallback)
+- Marker system: Cleo outputs `[MARKER: params]` → `browse_parser.py` routes to handler
+- **No backticks around markers** — models copy formatting literally, breaking regex parsing
+- Frontend changes need `npm run build` (no dev server)
 
-### SeekerClaw (target — migration destination)
-- **Language**: Node.js
-- **Runtime**: Android foreground service (24/7)
-- **Hardware**: Solana Seeker phone with Seed Vault
-- **Native features**: Telegram, Solana wallet, web research, memory, scheduling/cron, model switching
-- **Repo**: https://github.com/sepivip/SeekerClaw
-
-### Migration Strategy
-- Features move one-by-one from Windows → SeekerClaw
-- Each feature is tested on the phone before Windows version is retired
-- When ALL features are migrated, Windows Python project is deprecated
-- Prefer building for SeekerClaw unless the request specifies Windows
+### SeekerClaw (migration target)
+- Node.js 18 LTS / CommonJS / SQL.js (WASM SQLite — no native bindings)
+- Interface: **Telegram only** (no web UI, no Discord — by design)
+- 66 built-in tools, 20 bundled skills (weather, news, crypto, cron, memory, Solana, etc.)
+- **Hard limits**: 35 msg history · 4,096 tokens/response · 25 tool rounds/turn · 120KB tool result truncation
+- **Custom skills**: YAML frontmatter `.md` files — same format Cleo already uses
+- **Deployment**: write the `.md` skill file → tell Jan to upload it via Telegram to SeekerClaw, or install from URL with `skill_install`
+- **Missing integrations** (Gmail, Calendar, X): migrate via **MCP server** (SeekerClaw supports Streamable HTTP tool servers)
+- **No vector embeddings** — keyword search only (WASM limitation on Node 18)
+- Repo: https://github.com/sepivip/SeekerClaw
 
 ---
 
 ## Build Guidelines
 
-### When Building for SeekerClaw
-- Target: Node.js/JavaScript — not Python
-- Follow SeekerClaw's skill/tool pattern (check the SeekerClaw repo for conventions)
-- Output: deployment instructions + file contents Jan can copy to the phone
+**Default target: SeekerClaw** unless request specifies Windows.
 
-### When Building for Windows
-- Maintain existing patterns: FastAPI routes, SQLAlchemy models, marker system
-- New markers follow `[MARKER: params]` format (no backticks — models copy formatting literally)
-- Frontend changes require `npm run build` — no live dev server
-
-### Always
-- Write deployment instructions clearly enough that Jan (non-coder) can follow them
-- Update the Migration Status table in REQUESTS.md when features move
-- Append to the Change Log
+| Building for | Key rules |
+|---|---|
+| **SeekerClaw** | Write as `.md` skill (YAML frontmatter + instructions). For integrations needing API calls, use shell tool (curl) or propose an MCP server. Node 18 — no npm packages with native bindings. |
+| **Windows** | Maintain FastAPI/SQLAlchemy patterns. New markers: `[MARKER: params]`, no backticks. Frontend: `npm run build` after changes. |
+| **Both** | Write deployment steps Jan can follow without coding knowledge. |
 
 ---
 
 ## After Every Build
-1. Move the completed item from **Cleo → Claude Code** to **Claude Code → Cleo** in REQUESTS.md
-2. Include exact deployment steps in the **Claude Code → Cleo** entry
+1. Move item: **Cleo → Claude Code** → **Claude Code → Cleo** in REQUESTS.md
+2. Include step-by-step deployment instructions in that entry
 3. Update the **Migration Status** table
 4. Append to the **Change Log**
-5. Commit and push to cleo-brain
+5. Commit + push to cleo-brain
 
 ---
 
-## Model Selection Philosophy
-See the **Model Selection Guide** in REQUESTS.md for the full task→model map.
+## Model Selection
+Full guide in REQUESTS.md. Short version:
+- **Haiku** — routine lookups, standard emails, short posts
+- **Sonnet** — marketing copy, web research, complex emails, builds
+- **Opus** — last resort only
 
-**TL;DR**: Haiku for routine tasks, Sonnet for reasoning and content, Opus only when complexity genuinely demands it. Cleo is on-demand right now — cost-per-task matters.
+Cleo is on-demand, not 24/7. Cost-per-task matters more than speed.
 
 ---
 
 ## Never Leave a Session Without
-- Committing all changes to cleo-brain
-- Pushing to GitHub (ask Jan for PAT if needed)
-- REQUESTS.md reflecting the current state accurately
+- All changes committed and pushed to cleo-brain
+- REQUESTS.md accurately reflecting current state
