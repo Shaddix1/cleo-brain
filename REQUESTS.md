@@ -21,23 +21,63 @@ Tracking which Cleo features exist where.
 
 | Feature | Windows (Python) | SeekerClaw (Node.js) | Notes |
 |---|---|---|---|
-| X/Twitter posting | ✅ Built | ⬜ Not started | OAuth skill exists in SeekerClaw |
-| Gmail integration | ✅ Built | ⬜ Not started | Read, send, reply, draft, trash, star |
-| Google Calendar | ✅ Built | ⬜ Not started | View + create events, approval gated |
-| Ebook marketing skill | ✅ Built | ⬜ Not started | SKILL.md ready |
-| Solana wallet | ❌ N/A | ✅ Native | SeekerClaw + Seed Vault hardware |
-| Telegram interface | ✅ Built | ✅ Native | SeekerClaw built-in |
-| Scheduling/cron | ⚠️ Partial | ✅ Native | Windows: daily tasks on startup only |
-| Web research | ✅ Built | ✅ Native | Windows: Serper API + Playwright |
-| Memory | ✅ Built | ✅ Native | Windows: SQLite with keyword search |
-| Weather | ✅ Built | ⬜ Not started | Open-Meteo, no API key needed |
-| News | ✅ Built | ⬜ Not started | NewsData.io, 200 credits/day |
-| Crypto prices | ✅ Built | ✅ Native | Windows: CoinGecko; SeekerClaw: native |
-| Discord monitoring | ✅ Built | ⬜ Not started | On-demand channel reading |
-| Approval/audit system | ✅ Built | ⬜ Not started | Telegram inline buttons |
-| Personality/soul system | ✅ Built | ✅ Migrated | config/personality.yaml + soul.yaml |
-| Model switcher | ✅ Built | ✅ Native | Windows: Qwen/Gemini; SeekerClaw: native |
-| Chat UI (desktop) | ✅ Built | ❌ N/A | React frontend — not needed on phone |
+| X/Twitter posting | ✅ Built | ⬜ Not started | SeekerClaw has no X integration yet |
+| Gmail integration | ✅ Built | ⬜ Not started | Could port as custom skill |
+| Google Calendar | ✅ Built | ⬜ Not started | Could port as custom skill |
+| Ebook marketing skill | ✅ Built | ⬜ Not started | SKILL.md format compatible |
+| Solana wallet | ❌ N/A | ✅ Native | 16 tools: balance, swap, DCA, limit orders |
+| Telegram interface | ✅ Built | ✅ Native | SeekerClaw: mature (reactions, files, inline keyboards) |
+| Scheduling/cron | ⚠️ Partial | ✅ Native | SeekerClaw: natural language ("every day at 9am") |
+| Web research | ✅ Built | ✅ Native | SeekerClaw: DuckDuckGo (free), Brave (paid), Perplexity |
+| Memory | ✅ Built | ✅ Native | SeekerClaw: SOUL.md + MEMORY.md + SQL.js + daily notes |
+| Weather | ✅ Built | ✅ Built-in skill | SeekerClaw: bundled weather skill |
+| News | ✅ Built | ✅ Built-in skill | SeekerClaw: bundled news skill |
+| Crypto prices | ✅ Built | ✅ Built-in skill | SeekerClaw: bundled crypto-prices skill (CoinGecko) |
+| Discord monitoring | ✅ Built | ❌ Not possible | SeekerClaw: Telegram-only by design (no multi-channel) |
+| Approval/audit system | ✅ Built | ⚠️ Partial | SeekerClaw: only 7 high-risk tools gated, no "Always Allow" |
+| Personality/soul system | ✅ Built | ✅ Native | SeekerClaw: SOUL.md + IDENTITY.md + USER.md |
+| Model switcher | ✅ Built | ✅ Native | SeekerClaw: in-app dropdown + MODEL_SWITCH marker |
+| Chat UI (desktop) | ✅ Built | ❌ N/A | SeekerClaw: Telegram-only, no web UI (by design) |
+| Vision / image analysis | ❌ N/A | ✅ Native | SeekerClaw: Claude vision via Telegram photo uploads |
+| Camera | ❌ N/A | ✅ Native | SeekerClaw: front/back camera capture |
+| SMS / phone calls | ❌ N/A | ✅ Native | SeekerClaw: with confirmation gate |
+| MCP server support | ❌ N/A | ✅ Native | SeekerClaw: remote tool servers via Streamable HTTP |
+
+---
+
+## SeekerClaw — Key Capabilities & Limits
+
+### What It Does Well (Relevant to Cleo)
+- **66 built-in tools**: web search, memory, file ops, scheduling, Solana, Android bridge, Telegram, code execution
+- **20 bundled skills**: weather, news, crypto, research, reminders, todo, notes, summarize, translate, etc.
+- **Custom skills**: drop `.md` files with YAML frontmatter — same format Cleo already uses
+- **MCP support**: add external tool servers (enables Gmail, Calendar, X via MCP endpoints)
+- **Cron system**: natural language scheduling, persistent across restarts
+- **Security**: AES-256-GCM key storage, injection defense, prompt boundary markers, confirmation gates
+- **Models**: Opus 4.6, Sonnet 4.6, Sonnet 4.5, Haiku 4.5 — selectable per session
+- **Memory**: SOUL.md + MEMORY.md + SQL.js + ranked keyword search + daily notes
+- **Vision**: Claude vision analysis on photos sent via Telegram
+- **Shell**: 34 whitelisted commands (curl, grep, find, base64, etc.)
+
+### Hard Limits to Know
+- **Telegram only** — no web UI, no Discord, no WhatsApp (by design, not a bug)
+- **35 messages** max conversation history (resets with summary on /new)
+- **4,096 tokens** max per response
+- **25 tool-call rounds** max per turn
+- **Tool results >120KB** auto-truncated silently
+- **Node 18 LTS** only (nodejs-mobile constraint) — no native SQLite, no vector embeddings
+- **No autonomous DeFi signing** — every Solana tx requires manual phone approval (security design)
+- **OEM battery killers** — Xiaomi/Samsung ROMs kill background services; Seeker's stock Android is fine
+
+### Migration Path for Missing Cleo Features
+| Missing Feature | Best Migration Path |
+|---|---|
+| Gmail | MCP server or custom skill (SeekerClaw has curl + shell) |
+| Google Calendar | MCP server or custom skill |
+| X/Twitter posting | Custom skill (shell + curl to X API) |
+| Desktop web UI | Not applicable — Telegram replaces it |
+| Discord monitoring | Not possible currently; Telegram-only |
+| Full approval audit trail | Custom skill extending SeekerClaw's logging |
 
 ---
 
@@ -87,6 +127,8 @@ Default to the cheapest model that produces acceptable quality. Step up only whe
 - **Operational mode**: on-demand for now (intentional — minimizes API costs), 24/7 autonomous in future
 - **Hardware**: Solana Seeker phone with Seed Vault (hardware wallet security)
 - **Coordination**: Jan acts as CTO — sets priorities, carries instructions between agents
+- **SeekerClaw status**: Beta, MIT open-source, actively maintained (311 commits, v1.4.2 as of March 2026)
+- **SeekerClaw GitHub**: https://github.com/sepivip/SeekerClaw
 
 ---
 
@@ -94,3 +136,4 @@ Default to the cheapest model that produces acceptable quality. Step up only whe
 _All agents append every significant action here._
 
 - [2026-03-01] Claude Code — Initialized cleo-brain repo. Created REQUESTS.md and CLAUDE.md. Populated Migration Status table with accurate Windows build status. Added Model Selection Guide.
+- [2026-03-01] Claude Code — Deep research on SeekerClaw capabilities. Updated Migration Status with accurate SeekerClaw native feature status. Added SeekerClaw Capabilities & Limits section. Added Migration Path for missing features.
