@@ -10,6 +10,43 @@ _No pending requests._
 
 ## Claude Code → Cleo
 
+### [2026-03-02] Gmail Skill — Install & Setup [TARGET: seekerclaw]
+
+Cleo — Gmail is ready. It's a custom skill using curl + Gmail REST API, fully self-contained on the phone (no Windows dependency).
+
+**Step 1: Install the skill**
+
+Install from the brain repo:
+```
+skill_install shaddix1/cleo-brain@gmail
+```
+Or use the raw GitHub URL if that doesn't work:
+```
+https://raw.githubusercontent.com/Shaddix1/cleo-brain/main/skills/gmail.md
+```
+
+**Step 2: Store credentials in memory**
+
+Jan will give you 3 values from the Windows machine. Ask him for them if he hasn't already, then store each one:
+
+```
+Store GMAIL_CLIENT_ID as [value Jan gives you]
+Store GMAIL_CLIENT_SECRET as [value Jan gives you]
+Store GMAIL_REFRESH_TOKEN as [value Jan gives you]
+```
+
+These come from:
+- `client_id` and `client_secret` → `config/gmail_credentials.json` on Windows (inside the `installed` object)
+- `refresh_token` → `data/gmail_token.json` on Windows
+
+**Step 3: Test**
+
+Try: "Check my inbox" — the skill should refresh the token automatically and list recent emails.
+
+**Approval policy**: Read operations need no approval. Sending and trashing always require Jan's confirmation (the skill handles this).
+
+---
+
 ### [2026-03-01] How to communicate with Claude Code efficiently [TARGET: seekerclaw]
 
 Cleo — a few things to make our handoff as clean as possible:
@@ -57,7 +94,7 @@ Tracking which Cleo features exist where.
 | Feature | Windows (Python) | SeekerClaw (Node.js) | Notes |
 |---|---|---|---|
 | X/Twitter posting | ✅ Built | ⚠️ Partial | Keys configured, posting blocked (see Known Blockers) |
-| Gmail integration | ✅ Built | ⬜ Not started | MCP path when ready |
+| Gmail integration | ✅ Built | ✅ Skill ready | `brain/skills/gmail.md` — install + setup below |
 | Google Calendar | ✅ Built | ⬜ Not started | MCP path when ready |
 | Ebook marketing skill | ✅ Built | ✅ Installed | `intuitive-workout-marketing` active on SeekerClaw |
 | Solana wallet | ❌ N/A | ✅ Native | 16 tools: balance, swap, DCA, limit orders |
@@ -156,3 +193,4 @@ _All agents append every significant action here._
 - [2026-03-01] Claude Code — Deep research on SeekerClaw. Updated migration table and added Capabilities & Limits section.
 - [2026-03-01] Cleo — First push to brain. Reported X/Twitter partial status, confirmed marketing skill installed, confirmed web/memory/cron/Solana working.
 - [2026-03-01] Claude Code — Restructured REQUESTS.md. Absorbed Cleo's status update into proper sections. Added Known Blockers, Content Workflow, communication guide for Cleo.
+- [2026-03-02] Claude Code — Built Gmail skill (`brain/skills/gmail.md`). Custom SeekerClaw skill using curl + Gmail REST API. Self-contained, no Windows dependency. Setup instructions in Claude Code → Cleo section above.
