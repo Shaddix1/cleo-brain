@@ -109,10 +109,17 @@ Query syntax examples:
 
 **Before sending**: Show Jan the full email (To, Subject, Body) and wait for explicit confirmation.
 
-Build and encode the message:
+**CRITICAL — Email formatting**: Always send as HTML. Write the body as full paragraphs with no mid-sentence line breaks. Use `<p>` tags for paragraphs and `<br>` only for intentional single line breaks. This prevents broken word-wrap on mobile.
+
+Build the HTML body, then encode:
 
 ```bash
-printf "To: RECIPIENT\r\nSubject: SUBJECT\r\nContent-Type: text/plain; charset=utf-8\r\nMIME-Version: 1.0\r\n\r\nBODY" | base64 | tr '+/' '-_' | tr -d '='
+printf "To: RECIPIENT\r\nSubject: SUBJECT\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=utf-8\r\n\r\n<html><body>HTML_BODY</body></html>" | base64 | tr '+/' '-_' | tr -d '='
+```
+
+Example HTML body for a 3-paragraph email:
+```
+<p>First paragraph text here, written as one continuous line with no forced breaks.</p><p>Second paragraph.</p><p>Talk soon,<br>Jan</p>
 ```
 
 Then send:
@@ -128,7 +135,7 @@ curl -s -X POST "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
 
 ### Reply to Thread [REQUIRES JAN'S APPROVAL]
 
-Same as send, but include threading headers and `threadId`:
+Same as send (use HTML format), but include threading headers and `threadId`:
 
 Email headers to add:
 - `In-Reply-To: ORIGINAL_MESSAGE_ID`
@@ -144,6 +151,8 @@ curl -s -X POST "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
 ---
 
 ### Create Draft [No approval needed]
+
+Use HTML format (same as Send).
 
 ```bash
 curl -s -X POST "https://gmail.googleapis.com/gmail/v1/users/me/drafts" \
