@@ -109,21 +109,35 @@ Query syntax examples:
 
 **Before sending**: Show Jan the full email (To, Subject, Body) and wait for explicit confirmation.
 
-**CRITICAL — Email formatting**: Always send as HTML. Write the body as full paragraphs with no mid-sentence line breaks. Use `<p>` tags for paragraphs and `<br>` only for intentional single line breaks. This prevents broken word-wrap on mobile.
+**CRITICAL — Build the email correctly to avoid spam filters:**
 
-Build the HTML body, then encode:
+1. Always use multipart/alternative (HTML + plain text). HTML-only emails are a major spam signal.
+2. Include `From:`, `Date:`, `Message-ID:` headers — missing headers trigger spam filters.
+3. Write body paragraphs as single continuous lines (no mid-sentence line breaks).
+
+**Step 1 — Get sender address** (once, then store as `GMAIL_SENDER_EMAIL`):
+```bash
+curl -s "https://gmail.googleapis.com/gmail/v1/users/me/profile" \
+  -H "Authorization: Bearer GMAIL_ACCESS_TOKEN"
+```
+
+**Step 2 — Build the raw MIME message.** Use a shell script to construct it:
 
 ```bash
-printf "To: RECIPIENT\r\nSubject: SUBJECT\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=utf-8\r\n\r\n<html><body>HTML_BODY</body></html>" | base64 | tr '+/' '-_' | tr -d '='
+BOUNDARY="b$(date +%s)"
+DATE="$(date -R)"
+MSGID="<$(date +%s)@intuitive-workout.com>"
+PLAIN="PLAIN_TEXT_VERSION"
+HTML="<html><body><p>PARAGRAPH_1</p><p>PARAGRAPH_2</p><p>Talk soon,<br>Jan</p></body></html>"
+
+printf "From: Jan <%s>\r\nTo: %s\r\nSubject: %s\r\nDate: %s\r\nMessage-ID: %s\r\nMIME-Version: 1.0\r\nContent-Type: multipart/alternative; boundary=\"%s\"\r\n\r\n--%s\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n%s\r\n\r\n--%s\r\nContent-Type: text/html; charset=utf-8\r\n\r\n%s\r\n\r\n--%s--" \
+  "GMAIL_SENDER_EMAIL" "RECIPIENT" "SUBJECT" "$DATE" "$MSGID" "$BOUNDARY" "$BOUNDARY" "$PLAIN" "$BOUNDARY" "$HTML" "$BOUNDARY" \
+  | base64 | tr '+/' '-_' | tr -d '='
 ```
 
-Example HTML body for a 3-paragraph email:
-```
-<p>First paragraph text here, written as one continuous line with no forced breaks.</p><p>Second paragraph.</p><p>Talk soon,<br>Jan</p>
-```
+Plain text version = same content as HTML but stripped of tags, with paragraph breaks as blank lines.
 
-Then send:
-
+**Step 3 — Send:**
 ```bash
 curl -s -X POST "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
   -H "Authorization: Bearer GMAIL_ACCESS_TOKEN" \
@@ -135,9 +149,9 @@ curl -s -X POST "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
 
 ### Reply to Thread [REQUIRES JAN'S APPROVAL]
 
-Same as send (use HTML format), but include threading headers and `threadId`:
+Same as Send (multipart/alternative, all headers), plus threading headers and `threadId`:
 
-Email headers to add:
+Additional headers:
 - `In-Reply-To: ORIGINAL_MESSAGE_ID`
 - `References: ORIGINAL_MESSAGE_ID`
 
@@ -152,7 +166,7 @@ curl -s -X POST "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
 
 ### Create Draft [No approval needed]
 
-Use HTML format (same as Send).
+Use same multipart/alternative format as Send.
 
 ```bash
 curl -s -X POST "https://gmail.googleapis.com/gmail/v1/users/me/drafts" \
