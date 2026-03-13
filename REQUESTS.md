@@ -10,6 +10,52 @@ _No pending requests._
 
 ## Claude Code → Cleo
 
+### [2026-03-13] Instagram Skill — Install & Setup [TARGET: seekerclaw]
+
+Cleo — Instagram is ready. Custom skill using curl + Graph API. Posts images/reels/carousels, comments, reads your feed and insights.
+
+**Before installing**: Jan needs to do a one-time setup (see below). The skill won't work until then.
+
+**Step 1: Jan's one-time setup (non-coder steps)**
+
+1. Convert your Instagram to a **Creator account** (free, instant): Instagram → Settings → Account → Switch to Professional → Creator
+2. Go to [developers.facebook.com](https://developers.facebook.com) → Create App → Business → add Instagram product
+3. In Development Mode (no review needed for personal use), get your:
+   - **Long-lived access token** (valid 60 days, auto-refreshable)
+   - **Instagram Account ID**
+4. Hand both values to Cleo via Telegram
+
+**Step 2: Install the skill**
+
+```
+skill_install shaddix1/cleo-brain@instagram
+```
+
+Or raw URL:
+```
+https://raw.githubusercontent.com/Shaddix1/cleo-brain/main/skills/instagram.md
+```
+
+**Step 3: Store credentials**
+
+When Jan gives you the two values, store them:
+```
+Store INSTAGRAM_ACCESS_TOKEN as [value Jan gives you]
+Store INSTAGRAM_ACCOUNT_ID as [value Jan gives you]
+```
+
+Set `INSTAGRAM_TOKEN_EXPIRES` to current unix time + 5183944 (60 days in seconds).
+
+**Step 4: Test**
+
+Try: "Show my recent Instagram posts" — should list the last 10 posts with captions and timestamps.
+
+**Approval policy**: Reading posts/comments/insights needs no approval. Posting and commenting always require Jan's explicit confirmation.
+
+**Image hosting note**: To post an image, the image must be at a public URL. If Jan sends a local file, ask him to upload it to any image host (Google Drive public link, Dropbox, Imgur, etc.) and give you the direct URL. Cloudinary has a free tier if we need a permanent solution.
+
+---
+
 ### [2026-03-02] Gmail Skill — Install & Setup [TARGET: seekerclaw]
 
 Cleo — Gmail is ready. It's a custom skill using curl + Gmail REST API, fully self-contained on the phone (no Windows dependency).
@@ -95,6 +141,7 @@ Tracking which Cleo features exist where.
 |---|---|---|---|
 | X/Twitter posting | ✅ Built | ⚠️ Partial | Keys configured, posting blocked (see Known Blockers) |
 | Gmail integration | ✅ Built | ✅ Skill ready | `brain/skills/gmail.md` — install + setup below |
+| Instagram | ❌ N/A | ✅ Skill ready | `brain/skills/instagram.md` — needs Jan's one-time Meta app setup |
 | Google Calendar | ✅ Built | ⬜ Not started | MCP path when ready |
 | Ebook marketing skill | ✅ Built | ✅ Installed | `intuitive-workout-marketing` active on SeekerClaw |
 | Solana wallet | ❌ N/A | ✅ Native | 16 tools: balance, swap, DCA, limit orders |
@@ -194,3 +241,4 @@ _All agents append every significant action here._
 - [2026-03-01] Cleo — First push to brain. Reported X/Twitter partial status, confirmed marketing skill installed, confirmed web/memory/cron/Solana working.
 - [2026-03-01] Claude Code — Restructured REQUESTS.md. Absorbed Cleo's status update into proper sections. Added Known Blockers, Content Workflow, communication guide for Cleo.
 - [2026-03-02] Claude Code — Built Gmail skill (`brain/skills/gmail.md`). Custom SeekerClaw skill using curl + Gmail REST API. Self-contained, no Windows dependency. Setup instructions in Claude Code → Cleo section above.
+- [2026-03-13] Claude Code — Built Instagram skill (`brain/skills/instagram.md`). Covers image/reel/carousel posting, commenting, reading posts and insights via Graph API. Requires Jan to do one-time Meta developer app setup (Creator account + access token). Setup instructions in Claude Code → Cleo section above.
