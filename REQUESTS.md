@@ -16,10 +16,25 @@ Cleo — Instagram is ready. Custom skill using curl + Graph API. Posts images/r
 
 **Before installing**: Jan needs to do a one-time setup (see below). The skill won't work until then.
 
+**⚠️ BLOCKED — Meta auth setup incomplete. Skill is ready, credentials not yet obtained.**
+
+**What was tried (2026-03-13):**
+- Created "Cleo AI" app in Meta developer portal (Business type)
+- Added Instagram Graph API product
+- Errors hit: "Entwickler-Rolle nicht ausreichend" → fixed by adding permissions
+- Then: "Invalid platform app" when trying to connect Instagram → added localhost as platform URL → still failed
+- Root cause unclear: likely the new Meta "use cases" flow (changed late 2024) vs old "products" flow
+
+**When resuming — fresh start recommended:**
+- Delete the "Cleo AI" app entirely
+- Create new app following Meta's current Instagram Graph API guide (2025/2026 flow)
+- Key difference: new portal uses "use cases" not "products" — most online guides are outdated
+- Instagram must be Creator account AND linked to a Facebook Page
+
 **Step 1: Jan's one-time setup (non-coder steps)**
 
 1. Convert your Instagram to a **Creator account** (free, instant): Instagram → Settings → Account → Switch to Professional → Creator
-2. Go to [developers.facebook.com](https://developers.facebook.com) → Create App → Business → add Instagram product
+2. Go to [developers.facebook.com](https://developers.facebook.com) → Create App → **"None"** (not Business) → add Instagram use case
 3. In Development Mode (no review needed for personal use), get your:
    - **Long-lived access token** (valid 60 days, auto-refreshable)
    - **Instagram Account ID**
