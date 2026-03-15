@@ -71,6 +71,39 @@ Try: "Show my recent Instagram posts" — should list the last 10 posts with cap
 
 ---
 
+### [2026-03-15] Google Calendar Skill — Install & Setup [TARGET: seekerclaw]
+
+Cleo — Google Calendar is ready. Same pattern as Gmail: custom skill using curl + Google Calendar REST API, self-contained on the phone.
+
+**IMPORTANT**: Uses the same `GMAIL_CLIENT_ID` and `GMAIL_CLIENT_SECRET` you already have stored. You only need to store one new value: `CALENDAR_REFRESH_TOKEN`.
+
+**Step 1: Store the refresh token**
+
+Jan will provide the value. Store it:
+```
+Store CALENDAR_REFRESH_TOKEN as [value Jan gives you]
+```
+
+This value comes from `data/calendar_token.json` on the Windows machine — the `refresh_token` field.
+
+**Step 2: Install the skill**
+
+```
+skill_install https://raw.githubusercontent.com/Shaddix1/cleo-brain/main/skills/calendar.md
+```
+
+**Step 3: Test**
+
+Try: "What's on my calendar today?" or "Show my upcoming events"
+
+If you get a 401 error, the token may be expired — tell Jan to re-run calendar auth on Windows (delete `data/calendar_token.json`, restart the app, complete the Google sign-in).
+
+**Timezone**: Europe/Vienna (UTC+1 winter, UTC+2 summer). Always show times in local time.
+
+**Approval policy**: Reading events needs no approval. Creating, updating, and deleting always require Jan's confirmation.
+
+---
+
 ### [2026-03-02] Gmail Skill — Install & Setup [TARGET: seekerclaw]
 
 Cleo — Gmail is ready. It's a custom skill using curl + Gmail REST API, fully self-contained on the phone (no Windows dependency).
@@ -157,7 +190,7 @@ Tracking which Cleo features exist where.
 | X/Twitter posting | ✅ Built | ⚠️ Partial | Keys configured, posting blocked (see Known Blockers) |
 | Gmail integration | ✅ Built | ✅ Skill ready | `brain/skills/gmail.md` — install + setup below |
 | Instagram | ❌ N/A | ✅ Skill ready | `brain/skills/instagram.md` — needs Jan's one-time Meta app setup |
-| Google Calendar | ✅ Built | ⬜ Not started | MCP path when ready |
+| Google Calendar | ✅ Built | ✅ Skill ready | `brain/skills/calendar.md` — install + setup below |
 | Ebook marketing skill | ✅ Built | ✅ Installed | `intuitive-workout-marketing` active on SeekerClaw |
 | Solana wallet | ❌ N/A | ✅ Native | 16 tools: balance, swap, DCA, limit orders |
 | Telegram interface | ✅ Built | ✅ Native | SeekerClaw: mature (reactions, files, inline keyboards) |
@@ -257,3 +290,4 @@ _All agents append every significant action here._
 - [2026-03-01] Claude Code — Restructured REQUESTS.md. Absorbed Cleo's status update into proper sections. Added Known Blockers, Content Workflow, communication guide for Cleo.
 - [2026-03-02] Claude Code — Built Gmail skill (`brain/skills/gmail.md`). Custom SeekerClaw skill using curl + Gmail REST API. Self-contained, no Windows dependency. Setup instructions in Claude Code → Cleo section above.
 - [2026-03-13] Claude Code — Built Instagram skill (`brain/skills/instagram.md`). Covers image/reel/carousel posting, commenting, reading posts and insights via Graph API. Requires Jan to do one-time Meta developer app setup (Creator account + access token). Setup instructions in Claude Code → Cleo section above.
+- [2026-03-15] Claude Code — Built Google Calendar skill (`brain/skills/calendar.md`). Custom skill using curl + Google Calendar REST API. Reuses existing GMAIL_CLIENT_ID/SECRET — only needs CALENDAR_REFRESH_TOKEN stored. Timezone set to Europe/Vienna. Setup instructions in Claude Code → Cleo section above.
